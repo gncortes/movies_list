@@ -19,4 +19,18 @@ void main() {
 
     expect(response.isRight(), true);
   });
+
+  group('shoud test movie by year', () {
+    test('shoud return a movie', () async {
+      final response = await datasource.getMoviesByYear('2018');
+
+      expect(response.isRight(), true);
+    });
+
+    test('shoud not return a movie', () async {
+      final response = await datasource.getMoviesByYear('1');
+
+      expect(response.isRight(), false);
+    });
+  });
 }

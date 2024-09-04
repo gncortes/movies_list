@@ -11,7 +11,7 @@ abstract class IMoviesDatasource {
 
   Future<Either<CustomError, List<StudioModel>>> getStudiosWithTheMostWins();
 
-  Future<Either<CustomError, MovieModel>> getMovieByYear(String year);
+  Future<Either<CustomError, List<MovieModel>>> getMoviesByYear(String year);
 }
 
 class MoviesDatasource implements IMoviesDatasource {
@@ -86,18 +86,23 @@ class MoviesDatasource implements IMoviesDatasource {
   }
 
   @override
-  Future<Either<CustomError, MovieModel>> getMovieByYear(String year) async {
+  Future<Either<CustomError, List<MovieModel>>> getMoviesByYear(
+      String year) async {
     try {
       final response = await _httpService.get(
         path,
         queryParameters: {'winner': 'true', 'year': year},
       );
 
-      if (response != null) {
-        return Right(MovieModel.fromJson(response));
+      if (response is List && response.isNotEmpty) {
+        return Right(
+          (response).map((e) => MovieModel.fromJson(e)).toList(),
+        );
       }
 
-      return const Left(CustomError(message: 'Filme não encontrado'));
+      return Left(
+        CustomError(message: 'Filmes não encontrados no ano de $year'),
+      );
     } on CustomException catch (error) {
       return Left(error.error);
     } catch (error, stackTrace) {
