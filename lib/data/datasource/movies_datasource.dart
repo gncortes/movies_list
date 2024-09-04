@@ -28,8 +28,8 @@ class MoviesDatasource implements IMoviesDatasource {
         },
       );
 
-      if (response['content']['years'] is List) {
-        return Right((response['content']['years'] as List)
+      if (response['years'] is List) {
+        return Right((response['years'] as List)
             .map((e) => YearModel.fromJson(e))
             .toList());
       }
