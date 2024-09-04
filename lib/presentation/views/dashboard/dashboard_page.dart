@@ -1,7 +1,9 @@
 import 'package:flutter/material.dart';
 
+import '../../widgets/error.dart';
 import 'dashboard_controller.dart';
 import 'dashboard_states.dart';
+import 'widgets/widgets.dart';
 
 class DashboardPage extends StatefulWidget {
   final DashboardController controller;
@@ -21,54 +23,43 @@ class _DashboardPageState extends State<DashboardPage> {
         crossAxisAlignment: CrossAxisAlignment.stretch,
         children: [
           Row(
+            crossAxisAlignment: CrossAxisAlignment.start,
             children: [
               Expanded(
-                child: ValueListenableBuilder<DashboardYearsState>(
+                child: ValueListenableBuilder(
                   valueListenable: controller.yearsNotifier,
-                  builder: (context, state, _) {
-                    if (state is DashboardYearsLoadingState) {
-                      return const Center(child: CircularProgressIndicator());
-                    } else if (state is DashboardYearsSuccessState) {
-                      return ListView.builder(
-                        itemCount: state.years.length,
-                        itemBuilder: (context, index) {
-                          final year = state.years[index];
-                          return ListTile(
-                            title: Text('Year: ${year.year}'),
-                            subtitle: Text('Winners: ${year.winnerCount}'),
-                          );
-                        },
-                      );
-                    } else if (state is DashboardYearsErrorState) {
-                      return Center(
-                          child: Text('Error: ${state.error.message}'));
-                    }
-                    return Container();
+                  builder: (context, value, child) {
+                    return switch (value) {
+                      DashboardYearsLoadingState() =>
+                        const Center(child: CircularProgressIndicator()),
+                      DashboardYearsSuccessState() =>
+                        YearCard(years: value.years),
+                      DashboardYearsErrorState() => CustomErrorWidget(
+                          error: (value).error,
+                          onRetry: controller.getYearsWithMoreThanOneWinner,
+                        ),
+                      _ => const SizedBox
+                          .shrink(), // Fallback para estados desconhecidos
+                    };
                   },
                 ),
               ),
               Expanded(
-                child: ValueListenableBuilder<DashboardStudiosState>(
+                child: ValueListenableBuilder(
                   valueListenable: controller.studiosNotifier,
-                  builder: (context, state, _) {
-                    if (state is DashboardStudiosLoadingState) {
-                      return const Center(child: CircularProgressIndicator());
-                    } else if (state is DashboardStudiosSuccessState) {
-                      return ListView.builder(
-                        itemCount: state.studios.length,
-                        itemBuilder: (context, index) {
-                          final studio = state.studios[index];
-                          return ListTile(
-                            title: Text('Studio: ${studio.name}'),
-                            subtitle: Text('Wins: ${studio.winCount}'),
-                          );
-                        },
-                      );
-                    } else if (state is DashboardStudiosErrorState) {
-                      return Center(
-                          child: Text('Error: ${state.error.message}'));
-                    }
-                    return Container();
+                  builder: (context, value, child) {
+                    return switch (value) {
+                      DashboardStudiosLoadingState() =>
+                        const Center(child: CircularProgressIndicator()),
+                      DashboardStudiosSuccessState() =>
+                        StudiosCard(studios: value.studios),
+                      DashboardStudiosErrorState() => CustomErrorWidget(
+                          error: (value).error,
+                          onRetry: controller.getStudiosWithTheMostWins,
+                        ),
+                      _ => const SizedBox
+                          .shrink(), // Fallback para estados desconhecidos
+                    };
                   },
                 ),
               ),
