@@ -14,6 +14,12 @@ abstract class IMoviesDatasource {
   Future<Either<CustomError, List<MovieModel>>> getMoviesByYear(String year);
 
   Future<Either<CustomError, ProducerIntervalDataModel>> getMoviesAwardsRange();
+
+  Future<Either<CustomError, PaginedMoviesModel>> getMoviesByYearPagined(
+    String year,
+    int page,
+    int size,
+  );
 }
 
 class MoviesDatasource implements IMoviesDatasource {
@@ -132,6 +138,42 @@ class MoviesDatasource implements IMoviesDatasource {
       return const Left(
         CustomError(message: 'Intervalo de filmes não encontrado'),
       );
+    } on CustomException catch (error) {
+      return Left(error.error);
+    } catch (error, stackTrace) {
+      if (kDebugMode) {
+        print(error);
+        print(stackTrace);
+      }
+
+      return const Left(CustomError());
+    }
+  }
+
+  @override
+  Future<Either<CustomError, PaginedMoviesModel>> getMoviesByYearPagined(
+    String year,
+    int page,
+    int size,
+  ) async {
+    try {
+      final response = await _httpService.get(
+        path,
+        queryParameters: {
+          'winner': 'true',
+          'year': year,
+          'page': page,
+          'size': size,
+        },
+      );
+
+      if (response is Map<String, dynamic>) {
+        return Right(PaginedMoviesModel.fromJson(response));
+      }
+
+      return const Left(CustomError(
+        message: 'Lista de filmes não encontrada',
+      ));
     } on CustomException catch (error) {
       return Left(error.error);
     } catch (error, stackTrace) {
