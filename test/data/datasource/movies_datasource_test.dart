@@ -15,7 +15,7 @@ void main() {
   });
 
   test('shoud return a list of studios with more than one winner', () async {
-    final response = await datasource.getYearsWithMoreThanOneWinner();
+    final response = await datasource.getStudiosWithTheMostWins();
 
     expect(response.isRight(), true);
   });
