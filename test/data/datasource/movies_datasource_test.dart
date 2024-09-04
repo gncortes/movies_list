@@ -33,4 +33,20 @@ void main() {
       expect(response.isRight(), false);
     });
   });
+
+  test('shoud return a movies award range', () async {
+    final response = await datasource.getMoviesAwardsRange();
+
+    expect(response.isRight(), true);
+  });
+
+  test('shoud return a list of movies', () async {
+    final response = await datasource.getMoviesByYearPagined(
+      '2018',
+      page: 1,
+      size: 10,
+    );
+
+    expect(response.isRight(), true);
+  });
 }

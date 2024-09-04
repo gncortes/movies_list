@@ -16,10 +16,10 @@ abstract class IMoviesDatasource {
   Future<Either<CustomError, ProducerIntervalDataModel>> getMoviesAwardsRange();
 
   Future<Either<CustomError, PaginedMoviesModel>> getMoviesByYearPagined(
-    String year,
-    int page,
-    int size,
-  );
+    String year, {
+    required int page,
+    required int size,
+  });
 }
 
 class MoviesDatasource implements IMoviesDatasource {
@@ -152,10 +152,10 @@ class MoviesDatasource implements IMoviesDatasource {
 
   @override
   Future<Either<CustomError, PaginedMoviesModel>> getMoviesByYearPagined(
-    String year,
-    int page,
-    int size,
-  ) async {
+    String year, {
+    required int page,
+    required int size,
+  }) async {
     try {
       final response = await _httpService.get(
         path,
