@@ -1,6 +1,7 @@
 import 'dart:io';
 
 import 'package:dio/dio.dart';
+import 'package:flutter/foundation.dart';
 
 import '../domain/failures/custom_http_exceptions.dart';
 
@@ -45,13 +46,22 @@ class HttpServiceImplementation implements HttpServiceInterface {
       return response.data;
     } on SocketException catch (_) {
       throw NoInternetConnectionException();
-    } on DioException catch (error) {
+    } on DioException catch (error, stackTrace) {
+      if (kDebugMode) {
+        print(error);
+        print(stackTrace);
+      }
+
       if (error.response?.data != null) throw BadResponse(error.response?.data);
 
       throw DefaultException();
     } on BadResponse {
       rethrow;
-    } catch (error) {
+    } catch (error, stackTrace) {
+      if (kDebugMode) {
+        print(error);
+        print(stackTrace);
+      }
       throw DefaultException();
     }
   }
