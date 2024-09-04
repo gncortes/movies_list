@@ -12,6 +12,8 @@ abstract class IMoviesDatasource {
   Future<Either<CustomError, List<StudioModel>>> getStudiosWithTheMostWins();
 
   Future<Either<CustomError, List<MovieModel>>> getMoviesByYear(String year);
+
+  Future<Either<CustomError, ProducerIntervalDataModel>> getMoviesAwardsRange();
 }
 
 class MoviesDatasource implements IMoviesDatasource {
@@ -102,6 +104,33 @@ class MoviesDatasource implements IMoviesDatasource {
 
       return Left(
         CustomError(message: 'Filmes não encontrados no ano de $year'),
+      );
+    } on CustomException catch (error) {
+      return Left(error.error);
+    } catch (error, stackTrace) {
+      if (kDebugMode) {
+        print(error);
+        print(stackTrace);
+      }
+
+      return const Left(CustomError());
+    }
+  }
+
+  @override
+  Future<Either<CustomError, ProducerIntervalDataModel>>
+      getMoviesAwardsRange() async {
+    try {
+      final response = await _httpService.get(path, queryParameters: {
+        'projection': 'max-min-win-interval-for-producers'
+      });
+
+      if (response is Map<String, dynamic>) {
+        return Right(ProducerIntervalDataModel.fromJson(response));
+      }
+
+      return const Left(
+        CustomError(message: 'Intervalo de filmes não encontrado'),
       );
     } on CustomException catch (error) {
       return Left(error.error);
