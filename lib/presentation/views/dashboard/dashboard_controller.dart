@@ -8,9 +8,17 @@ class DashboardController {
 
   final yearsNotifier = YearsNotifier();
 
-  Future<void> fetch() {
-    return yearsNotifier.getYearsWithMoreThanOneWinner(
+  final studiosNotifier = StudiosNotifier();
+
+  Future<void> getYearsWithMoreThanOneWinner() {
+    return yearsNotifier.fetch(
       _datasource.getYearsWithMoreThanOneWinner,
+    );
+  }
+
+  Future<void> getStudiosWithTheMostWins() {
+    return studiosNotifier.fetch(
+      _datasource.getStudiosWithTheMostWins,
     );
   }
 }
