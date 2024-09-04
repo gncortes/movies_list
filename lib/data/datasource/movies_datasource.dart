@@ -4,10 +4,13 @@ import 'package:flutter/foundation.dart';
 import '../../domain/failures/custom_error.dart';
 import '../../domain/failures/custom_http_exceptions.dart';
 import '../../infrastructure/http_service.dart';
+import '../models/studio_model.dart';
 import '../models/year_model.dart';
 
 abstract class IMoviesDatasource {
   Future<Either<CustomError, List<YearModel>>> getYearsWithMoreThanOneWinner();
+
+  Future<Either<CustomError, List<StudioModel>>> getStudiosWithTheMostWins();
 }
 
 class MoviesDatasource implements IMoviesDatasource {
@@ -36,6 +39,38 @@ class MoviesDatasource implements IMoviesDatasource {
 
       return const Left(CustomError(
         message: 'Lista de filmes não encontrada',
+      ));
+    } on CustomException catch (error) {
+      return Left(error.error);
+    } catch (error, stackTrace) {
+      if (kDebugMode) {
+        print(error);
+        print(stackTrace);
+      }
+
+      return const Left(CustomError());
+    }
+  }
+
+  @override
+  Future<Either<CustomError, List<StudioModel>>>
+      getStudiosWithTheMostWins() async {
+    try {
+      final response = await _httpService.get(
+        path,
+        queryParameters: {
+          'projection': 'studios-with-win-count',
+        },
+      );
+
+      if (response['studios'] is List) {
+        return Right((response['studios'] as List)
+            .map((e) => StudioModel.fromJson(e))
+            .toList());
+      }
+
+      return const Left(CustomError(
+        message: 'Lista de Estudios não encontrada',
       ));
     } on CustomException catch (error) {
       return Left(error.error);

@@ -13,4 +13,10 @@ void main() {
 
     expect(response.isRight(), true);
   });
+
+  test('shoud return a list of studios with more than one winner', () async {
+    final response = await datasource.getYearsWithMoreThanOneWinner();
+
+    expect(response.isRight(), true);
+  });
 }
