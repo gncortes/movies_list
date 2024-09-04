@@ -1,7 +1,10 @@
 import 'package:flutter/material.dart';
 
+import 'dashboard_controller.dart';
+
 class DashboardPage extends StatefulWidget {
-  const DashboardPage({super.key});
+  final DashboardController controller;
+  const DashboardPage({super.key, required this.controller});
 
   @override
   State<DashboardPage> createState() => _DashboardPageState();
@@ -10,6 +13,8 @@ class DashboardPage extends StatefulWidget {
 class _DashboardPageState extends State<DashboardPage> {
   @override
   Widget build(BuildContext context) {
-    return const Placeholder();
+    return Scaffold(
+      appBar: AppBar(),
+    );
   }
 }
