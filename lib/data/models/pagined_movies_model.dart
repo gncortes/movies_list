@@ -11,6 +11,7 @@ class PaginedMoviesModel extends PaginedMoviesEntity {
   });
 
   factory PaginedMoviesModel.fromJson(Map<String, dynamic> json) {
+    print(json);
     return PaginedMoviesModel(
       content: (json['content'] as List)
           .map((movieJson) => MovieModel.fromJson(movieJson))

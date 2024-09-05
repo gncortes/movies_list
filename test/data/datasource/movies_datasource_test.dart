@@ -45,6 +45,7 @@ void main() {
       '2018',
       page: 1,
       size: 10,
+      winner: true,
     );
 
     expect(response.isRight(), true);

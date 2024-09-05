@@ -19,6 +19,7 @@ abstract class IMoviesDatasource {
     String year, {
     required int page,
     required int size,
+    required bool winner,
   });
 }
 
@@ -155,12 +156,13 @@ class MoviesDatasource implements IMoviesDatasource {
     String year, {
     required int page,
     required int size,
+    required bool winner,
   }) async {
     try {
       final response = await _httpService.get(
         path,
         queryParameters: {
-          'winner': 'true',
+          'winner': winner,
           'year': year,
           'page': page,
           'size': size,

@@ -12,20 +12,25 @@ class MoviesNotifier extends ValueNotifier<MoviesState> {
       String year, {
       required int page,
       required int size,
+      required bool winner,
     }) getMoviesByYearPaginated,
     String year,
-    bool winnerFilter,
+    bool winner,
   ) async {
     value = MoviesLoadingState();
-    final result = await getMoviesByYearPaginated(year, page: 1, size: 10);
-
+    final result = await getMoviesByYearPaginated(
+      year,
+      page: 0,
+      size: 10,
+      winner: winner,
+    );
+    print(result);
     result.fold(
       (error) => value = MoviesErrorState(error: error),
       (moviesData) {
+        print(moviesData.content);
         value = MoviesSuccessState(
-          movies: winnerFilter
-              ? moviesData.content.where((movie) => movie.winner).toList()
-              : moviesData.content,
+          movies: moviesData.content,
           totalPages: moviesData.totalPages,
         );
       },
@@ -37,21 +42,21 @@ class MoviesNotifier extends ValueNotifier<MoviesState> {
       String year, {
       required int page,
       required int size,
+      required bool winner,
     }) getMoviesByYearPaginated,
     String year,
-    bool winnerFilter,
+    bool winner,
   ) async {
     if (value is MoviesSuccessState &&
         !(value as MoviesSuccessState).isLoadingMore) {
       final currentState = value as MoviesSuccessState;
 
-      // Verifica se ainda existem mais páginas a serem carregadas
       if (currentState.movies.length / 10 < currentState.totalPages) {
         value = currentState.copyWith(isLoadingMore: true);
 
         final nextPage = (currentState.movies.length ~/ 10) + 1;
-        final result =
-            await getMoviesByYearPaginated(year, page: nextPage, size: 10);
+        final result = await getMoviesByYearPaginated(year,
+            page: nextPage, size: 10, winner: winner);
 
         result.fold(
           (error) {
@@ -61,9 +66,7 @@ class MoviesNotifier extends ValueNotifier<MoviesState> {
             );
           },
           (moviesData) {
-            final newMovies = winnerFilter
-                ? moviesData.content.where((movie) => movie.winner).toList()
-                : moviesData.content;
+            final newMovies = moviesData.content;
 
             value = currentState.copyWith(
               movies: currentState.movies + newMovies,
