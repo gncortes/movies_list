@@ -1,7 +1,6 @@
 import 'package:flutter/foundation.dart';
 import 'package:dartz/dartz.dart';
-import '../../../domain/entities/studio_entity.dart';
-import '../../../domain/entities/year_entity.dart';
+import '../../../domain/entities/entities.dart';
 import '../../../domain/failures/custom_error.dart';
 import 'dashboard_states.dart';
 
@@ -47,10 +46,25 @@ class StudiosNotifier extends ValueNotifier<DashboardStudiosState> {
   }
 }
 
-abstract class DashboardComponentState {}
+class ProducerIntervalNotifier
+    extends ValueNotifier<DashboardProducerIntervalState> {
+  ProducerIntervalNotifier() : super(DashboardProducerIntervalLoadingState());
 
-class ShowYearsState extends DashboardComponentState {}
+  Future<void> fetch(
+    Future<Either<CustomError, ProducerIntervalDataEntity>> Function()
+        fetchProducerInterval,
+  ) async {
+    value = DashboardProducerIntervalLoadingState();
 
-class ShowStudiosState extends DashboardComponentState {}
+    final result = await fetchProducerInterval();
 
-class InitialState extends DashboardComponentState {}
+    result.fold(
+      (customError) {
+        value = DashboardProducerIntervalErrorState(error: customError);
+      },
+      (producerIntervalData) {
+        value = DashboardProducerIntervalSuccessState(producerIntervalData);
+      },
+    );
+  }
+}

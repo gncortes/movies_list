@@ -32,3 +32,32 @@ class DashboardStudiosErrorState extends DashboardStudiosState {
 
   DashboardStudiosErrorState({required this.error});
 }
+
+abstract class DashboardProducerIntervalState {}
+
+class DashboardProducerIntervalLoadingState
+    extends DashboardProducerIntervalState {}
+
+class DashboardProducerIntervalSuccessState
+    extends DashboardProducerIntervalState {
+  final ProducerIntervalDataEntity producerIntervalData;
+
+  DashboardProducerIntervalSuccessState(this.producerIntervalData);
+}
+
+class DashboardProducerIntervalErrorState
+    extends DashboardProducerIntervalState {
+  final CustomError error;
+
+  DashboardProducerIntervalErrorState({required this.error});
+}
+
+abstract class DashboardComponentState {}
+
+class ShowYearsState extends DashboardComponentState {}
+
+class ShowStudiosState extends DashboardComponentState {}
+
+class InitialState extends DashboardComponentState {}
+
+class ShowProducerIntervalState extends DashboardComponentState {}
