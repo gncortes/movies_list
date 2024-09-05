@@ -161,8 +161,9 @@ class ProducerIntervalCard extends StatelessWidget {
                                   ),
                                   children: [
                                     TextSpan(
-                                      text:
-                                          '${producer.interval} anos', // Valor destacado
+                                      text: producer.interval > 1
+                                          ? '${producer.interval} anos'
+                                          : '${producer.interval} ano', // Valor destacado
                                       style: const TextStyle(
                                         fontSize: 16,
                                         fontWeight: FontWeight.bold,

@@ -15,6 +15,8 @@ class DashboardController {
 
   final producerIntervalNotifier = ProducerIntervalNotifier();
 
+  final movieSearchNotifier = MovieSearchNotifier();
+
   final selectedComponentNotifier =
       ValueNotifier<DashboardComponentState>(InitialState());
 
@@ -49,5 +51,16 @@ class DashboardController {
   void showMoviesAwardRange() {
     selectedComponentNotifier.value = ShowProducerIntervalState();
     getMoviesAwardsRange();
+  }
+
+  void showMoviesByYearSearch() {
+    selectedComponentNotifier.value = ShowMoviesByYearSearchState();
+  }
+
+  Future<void> searchMoviesByYear(String year) {
+    return movieSearchNotifier.fetch(
+      _datasource.getMoviesByYear,
+      year,
+    );
   }
 }

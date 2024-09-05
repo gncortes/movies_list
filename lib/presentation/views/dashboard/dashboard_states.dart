@@ -52,6 +52,24 @@ class DashboardProducerIntervalErrorState
   DashboardProducerIntervalErrorState({required this.error});
 }
 
+abstract class DashboardMovieSearchState {}
+
+class DashboardMovieSearchInitialState extends DashboardMovieSearchState {}
+
+class DashboardMovieSearchLoadingState extends DashboardMovieSearchState {}
+
+class DashboardMovieSearchSuccessState extends DashboardMovieSearchState {
+  final List<MovieEntity> movies;
+
+  DashboardMovieSearchSuccessState({required this.movies});
+}
+
+class DashboardMovieSearchErrorState extends DashboardMovieSearchState {
+  final CustomError error;
+
+  DashboardMovieSearchErrorState({required this.error});
+}
+
 abstract class DashboardComponentState {}
 
 class ShowYearsState extends DashboardComponentState {}
@@ -61,3 +79,5 @@ class ShowStudiosState extends DashboardComponentState {}
 class InitialState extends DashboardComponentState {}
 
 class ShowProducerIntervalState extends DashboardComponentState {}
+
+class ShowMoviesByYearSearchState extends DashboardComponentState {}

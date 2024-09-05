@@ -68,3 +68,26 @@ class ProducerIntervalNotifier
     );
   }
 }
+
+class MovieSearchNotifier extends ValueNotifier<DashboardMovieSearchState> {
+  MovieSearchNotifier() : super(DashboardMovieSearchInitialState());
+
+  Future<void> fetch(
+    Future<Either<CustomError, List<MovieEntity>>> Function(String)
+        fetchMoviesByYear,
+    String year,
+  ) async {
+    value = DashboardMovieSearchLoadingState();
+
+    final result = await fetchMoviesByYear(year);
+
+    result.fold(
+      (customError) {
+        value = DashboardMovieSearchErrorState(error: customError);
+      },
+      (movies) {
+        value = DashboardMovieSearchSuccessState(movies: movies);
+      },
+    );
+  }
+}

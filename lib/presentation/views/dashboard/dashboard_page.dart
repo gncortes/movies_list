@@ -26,28 +26,20 @@ class _DashboardPageState extends State<DashboardPage> {
           Padding(
             padding: const EdgeInsets.all(16.0),
             child: Wrap(
-              spacing: 16, // Espaçamento horizontal entre os botões
-              runSpacing: 16, // Espaçamento vertical entre as linhas de botões
-              alignment:
-                  WrapAlignment.center, // Alinhamento dos botões no centro
+              spacing: 16,
+              runSpacing: 16,
+              alignment: WrapAlignment.center,
               children: [
                 ElevatedButton(
-                  onPressed: () {
-                    controller.showYears(); // Mostrar Anos
-                  },
+                  onPressed: controller.showYears,
                   child: const Text('Mostrar Anos'),
                 ),
                 ElevatedButton(
-                  onPressed: () {
-                    controller.showStudios(); // Mostrar Estúdios
-                  },
+                  onPressed: controller.showStudios,
                   child: const Text('Mostrar Estúdios'),
                 ),
                 ElevatedButton(
-                  onPressed: () {
-                    controller
-                        .showMoviesAwardRange(); // Mostrar Intervalo de Prêmios
-                  },
+                  onPressed: controller.showMoviesAwardRange,
                   child: const Text('Mostrar Intervalo de Prêmios'),
                 ),
               ],
@@ -101,8 +93,7 @@ class _DashboardPageState extends State<DashboardPage> {
                         DashboardProducerIntervalErrorState() =>
                           CustomErrorWidget(
                             error: value.error,
-                            onRetry: controller
-                                .getMoviesAwardsRange, // Função para tentar de novo
+                            onRetry: controller.getMoviesAwardsRange,
                           ),
                         _ => const SizedBox.shrink(),
                       };
