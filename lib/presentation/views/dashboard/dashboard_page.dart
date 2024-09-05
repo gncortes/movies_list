@@ -25,8 +25,11 @@ class _DashboardPageState extends State<DashboardPage> {
         children: [
           Padding(
             padding: const EdgeInsets.all(16.0),
-            child: Row(
-              mainAxisAlignment: MainAxisAlignment.center,
+            child: Wrap(
+              spacing: 16, // Espaçamento horizontal entre os botões
+              runSpacing: 16, // Espaçamento vertical entre as linhas de botões
+              alignment:
+                  WrapAlignment.center, // Alinhamento dos botões no centro
               children: [
                 ElevatedButton(
                   onPressed: () {
@@ -34,12 +37,18 @@ class _DashboardPageState extends State<DashboardPage> {
                   },
                   child: const Text('Mostrar Anos'),
                 ),
-                const SizedBox(width: 16),
                 ElevatedButton(
                   onPressed: () {
-                    controller.showStudios();
+                    controller.showStudios(); // Mostrar Estúdios
                   },
                   child: const Text('Mostrar Estúdios'),
+                ),
+                ElevatedButton(
+                  onPressed: () {
+                    controller
+                        .showMoviesAwardRange(); // Mostrar Intervalo de Prêmios
+                  },
+                  child: const Text('Mostrar Intervalo de Prêmios'),
                 ),
               ],
             ),
@@ -74,6 +83,26 @@ class _DashboardPageState extends State<DashboardPage> {
                         DashboardStudiosErrorState() => CustomErrorWidget(
                             error: value.error,
                             onRetry: controller.getStudiosWithTheMostWins,
+                          ),
+                        _ => const SizedBox.shrink(),
+                      };
+                    },
+                  ),
+                ShowProducerIntervalState() => ValueListenableBuilder(
+                    valueListenable: controller.producerIntervalNotifier,
+                    builder: (context, value, _) {
+                      return switch (value) {
+                        DashboardProducerIntervalLoadingState() =>
+                          const CenteredLoading(),
+                        DashboardProducerIntervalSuccessState() =>
+                          ProducerIntervalCard(
+                            data: value.producerIntervalData,
+                          ),
+                        DashboardProducerIntervalErrorState() =>
+                          CustomErrorWidget(
+                            error: value.error,
+                            onRetry: controller
+                                .getMoviesAwardsRange, // Função para tentar de novo
                           ),
                         _ => const SizedBox.shrink(),
                       };
