@@ -176,44 +176,65 @@ void main() {
     });
   });
 
-  // group('getMoviesAwardsRange', () {
-  //   test('should return ProducerIntervalDataModel on success', () async {
-  //     when(mockHttpService.get(path,
-  //             queryParameters: anyNamed('queryParameters')))
-  //         .thenAnswer((_) async => {
-  //               'max': {'producer': 'Producer 1', 'interval': 10},
-  //               'min': {'producer': 'Producer 2', 'interval': 1}
-  //             });
+  group('getMoviesAwardsRange', () {
+    final queryParameters = {
+      'projection': 'max-min-win-interval-for-producers'
+    };
+    test('should return ProducerIntervalDataModel on success', () async {
+      when(mockHttpService.get(path, queryParameters: queryParameters))
+          .thenAnswer(
+        (_) async => {
+          "min": [
+            {
+              "producer": "Producer Name",
+              "interval": 9,
+              "previousWin": 2018,
+              "followingWin": 2019
+            }
+          ],
+          "max": [
+            {
+              "producer": "Producer Name",
+              "interval": 99,
+              "previousWin": 1900,
+              "followingWin": 1999
+            }
+          ]
+        },
+      );
 
-  //     final result = await datasource.getMoviesAwardsRange();
+      final result = await datasource.getMoviesAwardsRange();
 
-  //     expect(result.isRight(), true);
-  //     expect(result.getOrElse(() => null), isA<ProducerIntervalDataModel>());
-  //   });
+      expect(result.isRight(), true);
+    });
 
-  //   test('should return CustomError when interval data is not found', () async {
-  //     when(mockHttpService.get(path,
-  //             queryParameters: anyNamed('queryParameters')))
-  //         .thenAnswer((_) async => {});
+    test('should return CustomError when interval data is not found', () async {
+      when(mockHttpService.get(path, queryParameters: queryParameters))
+          .thenAnswer((_) async => {});
 
-  //     final result = await datasource.getMoviesAwardsRange();
+      final result = await datasource.getMoviesAwardsRange();
 
-  //     expect(result.isLeft(), true);
-  //     expect(result.fold((l) => l.message, (r) => null),
-  //         'Movies awards range not found');
-  //   });
+      expect(result.isLeft(), true);
+      expect(result.fold((l) => l.message, (r) => null),
+          'Intervalo de filmes não encontrado');
+    });
 
-  //   test('should return CustomError in case of an exception', () async {
-  //     when(mockHttpService.get(path,
-  //             queryParameters: anyNamed('queryParameters')))
-  //         .thenThrow(CustomException(error: CustomError(message: 'Error')));
+    test('should return CustomError in case of an exception', () async {
+      when(mockHttpService.get(path,
+              queryParameters: anyNamed('queryParameters')))
+          .thenThrow(
+        DefaultException(),
+      );
 
-  //     final result = await datasource.getMoviesAwardsRange();
+      final result = await datasource.getMoviesAwardsRange();
 
-  //     expect(result.isLeft(), true);
-  //     expect(result.fold((l) => l.message, (r) => null), 'Error');
-  //   });
-  // });
+      expect(result.isLeft(), true);
+      expect(
+        result.fold((l) => l.message, (r) => null),
+        'Aconteceu um erro inesperado',
+      );
+    });
+  });
 
   // group('getMoviesByYearPagined', () {
   //   test('should return PaginedMoviesModel on success', () async {
