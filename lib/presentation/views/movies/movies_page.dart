@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
 
+import '../../widgets/drawer/custom_drawer.dart';
+
 class MoviesPage extends StatefulWidget {
   const MoviesPage({super.key});
 
@@ -10,6 +12,14 @@ class MoviesPage extends StatefulWidget {
 class _MoviesPageState extends State<MoviesPage> {
   @override
   Widget build(BuildContext context) {
-    return const Placeholder();
+    return Scaffold(
+      drawer: CustomDrawer(
+        currentRoute: ModalRoute.of(context)!.settings.name ?? '',
+      ),
+      appBar: AppBar(
+        centerTitle: true,
+        title: const Text('Filmes'),
+      ),
+    );
   }
 }

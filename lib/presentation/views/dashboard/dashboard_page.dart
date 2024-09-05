@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 
+import '../../widgets/drawer/custom_drawer.dart';
 import '../../widgets/widgets.dart';
 import 'dashboard_controller.dart';
 import 'dashboard_states.dart';
@@ -19,8 +20,26 @@ class _DashboardPageState extends State<DashboardPage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      drawer: CustomDrawer(
+        currentRoute: ModalRoute.of(context)!.settings.name ?? '',
+      ),
       appBar: AppBar(
-        title: const Text('Dashboard'),
+        centerTitle: true,
+        title: ValueListenableBuilder<DashboardComponentState>(
+          valueListenable: controller.selectedComponentNotifier,
+          builder: (context, state, _) {
+            return Text(
+              switch (state) {
+                ShowYearsState() => 'Anos com Mais de um Vencedor',
+                ShowStudiosState() => 'Estúdios com Mais Vitórias',
+                ShowProducerIntervalState() =>
+                  'Intervalo de Prêmios dos Produtores',
+                ShowMoviesByYearSearchState() => 'Pesquisar Filmes por Ano',
+                _ => 'Selecione uma Opção',
+              },
+            );
+          },
+        ),
       ),
       body: ListView(
         children: [
@@ -111,7 +130,7 @@ class _DashboardPageState extends State<DashboardPage> {
                     searchNotifier: controller.movieSearchNotifier,
                     textEditingController: moviesSearchController,
                   ),
-                _ => const Center(child: Text('Selecione uma opção')),
+                _ => const SizedBox(),
               };
             },
           ),
