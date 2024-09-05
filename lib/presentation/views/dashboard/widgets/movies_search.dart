@@ -45,12 +45,13 @@ class MoviesSearchWidget extends StatelessWidget {
                     final year = textEditingController.text;
                     if (year.isNotEmpty) {
                       onSearch(year);
-                    } else {
-                      ScaffoldMessenger.of(context).showSnackBar(
-                        const SnackBar(
-                            content: Text('Por favor, insira um ano válido')),
-                      );
+                      return;
                     }
+
+                    ScaffoldMessenger.of(context).showSnackBar(
+                      const SnackBar(
+                          content: Text('Por favor, insira um ano válido')),
+                    );
                   },
                   style: ElevatedButton.styleFrom(
                     shape: const RoundedRectangleBorder(

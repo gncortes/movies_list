@@ -84,7 +84,13 @@ class _MoviesPageState extends State<MoviesPage> {
                         controller.getMoviesByYear(
                           _yearController.text,
                         );
+                        return;
                       }
+
+                      ScaffoldMessenger.of(context).showSnackBar(
+                        const SnackBar(
+                            content: Text('Por favor, insira um ano válido')),
+                      );
                     },
                     style: ElevatedButton.styleFrom(
                       shape: const RoundedRectangleBorder(
@@ -112,8 +118,19 @@ class _MoviesPageState extends State<MoviesPage> {
                       NotificationListener<ScrollNotification>(
                         onNotification: _onScrollNotification,
                         child: ListView.builder(
-                          itemCount: value.movies.length,
+                          itemCount: value.isLoadingMore
+                              ? value.movies.length + 1
+                              : value.movies.length,
                           itemBuilder: (context, index) {
+                            if (index >= value.movies.length) {
+                              return const Center(
+                                child: Padding(
+                                  padding: EdgeInsets.all(8.0),
+                                  child: CircularProgressIndicator(),
+                                ),
+                              );
+                            }
+
                             final movie = value.movies[index];
                             return ListTile(
                               title: Text(movie.title),

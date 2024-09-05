@@ -12,12 +12,14 @@ class MoviesSuccessState extends MoviesState {
   final int totalPages;
   final bool isLoadingMore;
   final CustomError? loadMoreError;
+  final bool hasMore;
 
   MoviesSuccessState({
     required this.movies,
     required this.totalPages,
     this.isLoadingMore = false,
     this.loadMoreError,
+    required this.hasMore,
   });
 
   MoviesSuccessState copyWith({
@@ -25,12 +27,14 @@ class MoviesSuccessState extends MoviesState {
     int? totalPages,
     bool? isLoadingMore,
     CustomError? loadMoreError,
+    bool? hasMore,
   }) {
     return MoviesSuccessState(
       movies: movies ?? this.movies,
       totalPages: totalPages ?? this.totalPages,
       isLoadingMore: isLoadingMore ?? this.isLoadingMore,
       loadMoreError: loadMoreError,
+      hasMore: hasMore ?? this.hasMore,
     );
   }
 }

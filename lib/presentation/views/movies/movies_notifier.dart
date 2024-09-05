@@ -24,14 +24,14 @@ class MoviesNotifier extends ValueNotifier<MoviesState> {
       size: 10,
       winner: winner,
     );
-    print(result);
+
     result.fold(
       (error) => value = MoviesErrorState(error: error),
       (moviesData) {
-        print(moviesData.content);
         value = MoviesSuccessState(
           movies: moviesData.content,
           totalPages: moviesData.totalPages,
+          hasMore: moviesData.hasMore,
         );
       },
     );
@@ -51,12 +51,17 @@ class MoviesNotifier extends ValueNotifier<MoviesState> {
         !(value as MoviesSuccessState).isLoadingMore) {
       final currentState = value as MoviesSuccessState;
 
-      if (currentState.movies.length / 10 < currentState.totalPages) {
+      if (currentState.hasMore) {
         value = currentState.copyWith(isLoadingMore: true);
 
-        final nextPage = (currentState.movies.length ~/ 10) + 1;
-        final result = await getMoviesByYearPaginated(year,
-            page: nextPage, size: 10, winner: winner);
+        final nextPage = currentState.movies.length;
+
+        final result = await getMoviesByYearPaginated(
+          year,
+          page: nextPage,
+          size: 10,
+          winner: winner,
+        );
 
         result.fold(
           (error) {
@@ -72,6 +77,7 @@ class MoviesNotifier extends ValueNotifier<MoviesState> {
               movies: currentState.movies + newMovies,
               isLoadingMore: false,
               totalPages: moviesData.totalPages,
+              hasMore: moviesData.hasMore,
             );
           },
         );

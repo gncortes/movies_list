@@ -27,13 +27,14 @@ class MoviesController {
         year,
         winnerFilterNotifier.value,
       );
-    } else {
-      await moviesNotifier.loadMore(
-        _datasource.getMoviesByYearPagined,
-        year,
-        winnerFilterNotifier.value,
-      );
+      return;
     }
+
+    await moviesNotifier.loadMore(
+      _datasource.getMoviesByYearPagined,
+      year,
+      winnerFilterNotifier.value,
+    );
   }
 
   void clearMovies() {
