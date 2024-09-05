@@ -28,31 +28,53 @@ class StudiosCard extends StatelessWidget {
               ),
             ),
             const SizedBox(height: 16),
-            Column(
-              children: studios.map((studio) {
+            ...studios.map(
+              (studio) {
                 return Padding(
                   padding: const EdgeInsets.symmetric(vertical: 8.0),
-                  child: Row(
-                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.stretch,
                     children: [
-                      Text(
-                        'Estúdio: ${studio.name}',
-                        style: const TextStyle(
-                          fontSize: 18,
-                          fontWeight: FontWeight.w500,
+                      Text.rich(
+                        TextSpan(
+                          text: 'Estúdio: ', // Texto normal
+                          style: const TextStyle(
+                            fontSize: 18,
+                            fontWeight: FontWeight.w400,
+                          ),
+                          children: [
+                            TextSpan(
+                              text: studio.name, // Valor destacado
+                              style: const TextStyle(
+                                fontSize: 18,
+                                fontWeight: FontWeight.bold,
+                              ),
+                            ),
+                          ],
                         ),
                       ),
-                      Text(
-                        'Vitórias: ${studio.winCount}',
-                        style: const TextStyle(
-                          fontSize: 16,
-                          color: Colors.grey,
+                      Text.rich(
+                        TextSpan(
+                          text: 'Vitórias: ', // Texto normal
+                          style: const TextStyle(
+                            fontSize: 16,
+                            fontWeight: FontWeight.w400,
+                          ),
+                          children: [
+                            TextSpan(
+                              text: '${studio.winCount}', // Valor destacado
+                              style: const TextStyle(
+                                fontSize: 16,
+                                fontWeight: FontWeight.bold,
+                              ),
+                            ),
+                          ],
                         ),
                       ),
                     ],
                   ),
                 );
-              }).toList(),
+              },
             ),
           ],
         ),

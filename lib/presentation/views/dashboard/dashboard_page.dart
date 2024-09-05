@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 
 import '../../widgets/widgets.dart';
 import 'dashboard_controller.dart';
+import 'dashboard_notifiers.dart';
 import 'dashboard_states.dart';
 import 'widgets/widgets.dart';
 
@@ -20,64 +21,71 @@ class _DashboardPageState extends State<DashboardPage> {
     return Scaffold(
       appBar: AppBar(
         title: const Text('Dashboard'),
-        actions: [
-          IconButton(onPressed: _reload, icon: const Icon(Icons.refresh))
-        ],
       ),
       body: ListView(
         children: [
-          Row(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              Expanded(
-                child: ValueListenableBuilder(
-                  valueListenable: controller.yearsNotifier,
-                  builder: (context, value, child) {
-                    return switch (value) {
-                      DashboardYearsLoadingState() => const CenteredLoading(),
-                      DashboardYearsSuccessState() =>
-                        YearCard(years: value.years),
-                      DashboardYearsErrorState() => CustomErrorWidget(
-                          error: (value).error,
-                          onRetry: controller.getYearsWithMoreThanOneWinner,
-                        ),
-                      _ => const SizedBox.shrink(),
-                    };
+          Padding(
+            padding: const EdgeInsets.all(16.0),
+            child: Row(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: [
+                ElevatedButton(
+                  onPressed: () {
+                    controller.showYears(); // Mostrar Anos
                   },
+                  child: const Text('Mostrar Anos'),
                 ),
-              ),
-              Expanded(
-                child: ValueListenableBuilder(
-                  valueListenable: controller.studiosNotifier,
-                  builder: (context, value, child) {
-                    return switch (value) {
-                      DashboardStudiosLoadingState() => const CenteredLoading(),
-                      DashboardStudiosSuccessState() =>
-                        StudiosCard(studios: value.studios),
-                      DashboardStudiosErrorState() => CustomErrorWidget(
-                          error: (value).error,
-                          onRetry: controller.getStudiosWithTheMostWins,
-                        ),
-                      _ => const SizedBox.shrink(),
-                    };
+                const SizedBox(width: 16),
+                ElevatedButton(
+                  onPressed: () {
+                    controller.showStudios();
                   },
+                  child: const Text('Mostrar Estúdios'),
                 ),
-              ),
-            ],
-          )
+              ],
+            ),
+          ),
+          ValueListenableBuilder<DashboardComponentState>(
+            valueListenable: controller.selectedComponentNotifier,
+            builder: (context, state, _) {
+              return switch (state) {
+                ShowYearsState() => ValueListenableBuilder(
+                    valueListenable: controller.yearsNotifier,
+                    builder: (context, value, _) {
+                      return switch (value) {
+                        DashboardYearsLoadingState() => const CenteredLoading(),
+                        DashboardYearsSuccessState() =>
+                          YearCard(years: value.years),
+                        DashboardYearsErrorState() => CustomErrorWidget(
+                            error: value.error,
+                            onRetry: controller.getYearsWithMoreThanOneWinner,
+                          ),
+                        _ => const SizedBox.shrink(),
+                      };
+                    },
+                  ),
+                ShowStudiosState() => ValueListenableBuilder(
+                    valueListenable: controller.studiosNotifier,
+                    builder: (context, value, _) {
+                      return switch (value) {
+                        DashboardStudiosLoadingState() =>
+                          const CenteredLoading(),
+                        DashboardStudiosSuccessState() =>
+                          StudiosCard(studios: value.studios),
+                        DashboardStudiosErrorState() => CustomErrorWidget(
+                            error: value.error,
+                            onRetry: controller.getStudiosWithTheMostWins,
+                          ),
+                        _ => const SizedBox.shrink(),
+                      };
+                    },
+                  ),
+                _ => const Center(child: Text('Selecione uma opção')),
+              };
+            },
+          ),
         ],
       ),
     );
-  }
-
-  @override
-  void initState() {
-    _reload();
-    super.initState();
-  }
-
-  void _reload() {
-    controller.getStudiosWithTheMostWins();
-    controller.getYearsWithMoreThanOneWinner();
   }
 }

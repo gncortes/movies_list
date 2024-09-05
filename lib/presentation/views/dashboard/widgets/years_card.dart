@@ -35,18 +35,40 @@ class YearCard extends StatelessWidget {
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.stretch,
                     children: [
-                      Text(
-                        'Ano: ${year.year}',
-                        style: const TextStyle(
-                          fontSize: 18,
-                          fontWeight: FontWeight.w500,
+                      Text.rich(
+                        TextSpan(
+                          text: 'Ano: ', // Texto normal
+                          style: const TextStyle(
+                            fontSize: 18,
+                            fontWeight: FontWeight.w400,
+                          ),
+                          children: [
+                            TextSpan(
+                              text: '${year.year}', // Valor destacado
+                              style: const TextStyle(
+                                fontSize: 18,
+                                fontWeight: FontWeight.bold,
+                              ),
+                            ),
+                          ],
                         ),
                       ),
-                      Text(
-                        'Vencedores: ${year.winnerCount}',
-                        style: const TextStyle(
-                          fontSize: 16,
-                          color: Colors.grey,
+                      Text.rich(
+                        TextSpan(
+                          text: 'Vencedores: ', // Texto normal
+                          style: const TextStyle(
+                            fontSize: 16,
+                            fontWeight: FontWeight.w400,
+                          ),
+                          children: [
+                            TextSpan(
+                              text: '${year.winnerCount}', // Valor destacado
+                              style: const TextStyle(
+                                fontSize: 16,
+                                fontWeight: FontWeight.bold,
+                              ),
+                            ),
+                          ],
                         ),
                       ),
                     ],

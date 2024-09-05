@@ -1,3 +1,5 @@
+import 'package:flutter/material.dart';
+
 import '../../../data/datasource/movies_datasource.dart';
 import 'dashboard_notifiers.dart';
 
@@ -10,6 +12,9 @@ class DashboardController {
 
   final studiosNotifier = StudiosNotifier();
 
+  final selectedComponentNotifier =
+      ValueNotifier<DashboardComponentState>(InitialState());
+
   Future<void> getYearsWithMoreThanOneWinner() {
     return yearsNotifier.fetch(
       _datasource.getYearsWithMoreThanOneWinner,
@@ -20,5 +25,15 @@ class DashboardController {
     return studiosNotifier.fetch(
       _datasource.getStudiosWithTheMostWins,
     );
+  }
+
+  void showYears() {
+    selectedComponentNotifier.value = ShowYearsState();
+    getYearsWithMoreThanOneWinner();
+  }
+
+  void showStudios() {
+    selectedComponentNotifier.value = ShowStudiosState();
+    getStudiosWithTheMostWins();
   }
 }

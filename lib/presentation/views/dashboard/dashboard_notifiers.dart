@@ -46,3 +46,11 @@ class StudiosNotifier extends ValueNotifier<DashboardStudiosState> {
     );
   }
 }
+
+abstract class DashboardComponentState {}
+
+class ShowYearsState extends DashboardComponentState {}
+
+class ShowStudiosState extends DashboardComponentState {}
+
+class InitialState extends DashboardComponentState {}
