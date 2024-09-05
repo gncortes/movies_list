@@ -126,44 +126,55 @@ void main() {
     });
   });
 
-  // group('getMoviesByYear', () {
-  //   test('should return a list of MovieModel on success', () async {
-  //     when(mockHttpService.get(path,
-  //             queryParameters: anyNamed('queryParameters')))
-  //         .thenAnswer((_) async => [
-  //               {'title': 'Movie 1', 'year': '1990', 'winner': true},
-  //               {'title': 'Movie 2', 'year': '1990', 'winner': true}
-  //             ]);
+  group('getMoviesByYear', () {
+    final queryParameters = {'winner': 'true', 'year': '1990'};
+    test('should return a list of MovieModel on success', () async {
+      when(mockHttpService.get(path, queryParameters: queryParameters))
+          .thenAnswer(
+        (_) async => [
+          {
+            "id": 99,
+            "year": 1990,
+            "title": "Movie Title",
+            "studios": ["Studio Name"],
+            "producers": [" Producer Name "],
+            "winner": true
+          }
+        ],
+      );
 
-  //     final result = await datasource.getMoviesByYear('1990');
+      final result = await datasource.getMoviesByYear('1990');
 
-  //     expect(result.isRight(), true);
-  //     expect(result.getOrElse(() => []), isA<List<MovieModel>>());
-  //   });
+      expect(result.isRight(), true);
+      expect(result.getOrElse(() => []), isA<List<MovieModel>>());
+    });
 
-  //   test('should return CustomError when no movies are found', () async {
-  //     when(mockHttpService.get(path,
-  //             queryParameters: anyNamed('queryParameters')))
-  //         .thenAnswer((_) async => []);
+    test('should return CustomError when no movies are found', () async {
+      when(mockHttpService.get(path, queryParameters: queryParameters))
+          .thenAnswer((_) async => []);
 
-  //     final result = await datasource.getMoviesByYear('1990');
+      final result = await datasource.getMoviesByYear('1990');
 
-  //     expect(result.isLeft(), true);
-  //     expect(result.fold((l) => l.message, (r) => null),
-  //         'Movies not found in the year 1990');
-  //   });
+      expect(result.isLeft(), true);
+      expect(result.fold((l) => l.message, (r) => null),
+          'Filmes não encontrados no ano de 1990');
+    });
 
-  //   test('should return CustomError in case of an exception', () async {
-  //     when(mockHttpService.get(path,
-  //             queryParameters: anyNamed('queryParameters')))
-  //         .thenThrow(CustomException(error: CustomError(message: 'Error')));
+    test('should return CustomError in case of an exception', () async {
+      when(mockHttpService.get(path, queryParameters: queryParameters))
+          .thenThrow(
+        DefaultException(),
+      );
 
-  //     final result = await datasource.getMoviesByYear('1990');
+      final result = await datasource.getMoviesByYear('1990');
 
-  //     expect(result.isLeft(), true);
-  //     expect(result.fold((l) => l.message, (r) => null), 'Error');
-  //   });
-  // });
+      expect(result.isLeft(), true);
+      expect(
+        result.fold((l) => l.message, (r) => null),
+        'Aconteceu um erro inesperado',
+      );
+    });
+  });
 
   // group('getMoviesAwardsRange', () {
   //   test('should return ProducerIntervalDataModel on success', () async {
