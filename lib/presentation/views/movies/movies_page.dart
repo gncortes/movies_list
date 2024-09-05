@@ -80,7 +80,10 @@ class _MoviesPageState extends State<MoviesPage> {
                     onPressed: () {
                       FocusScope.of(context).unfocus();
                       if (_yearController.text.isNotEmpty) {
-                        controller.getMoviesByYear(_yearController.text);
+                        controller.clearMovies();
+                        controller.getMoviesByYear(
+                          _yearController.text,
+                        );
                       }
                     },
                     style: ElevatedButton.styleFrom(
@@ -105,64 +108,20 @@ class _MoviesPageState extends State<MoviesPage> {
                     MoviesLoadingState() => const Center(
                         child: CircularProgressIndicator(),
                       ),
-                    MoviesSuccessState() => Column(
-                        children: [
-                          Expanded(
-                            child: ListView.builder(
-                              itemCount: value.movies.length,
-                              itemBuilder: (context, index) {
-                                final movie = value.movies[index];
-                                return ListTile(
-                                  title: Text(movie.title),
-                                  subtitle: Text(
-                                      'Ano: ${movie.year} | Vencedor: ${movie.winner ? "Sim" : "Não"}'),
-                                );
-                              },
-                            ),
-                          ),
-                          Expanded(
-                            // Usa NotificationListener para detectar a rolagem e carregar mais dados
-                            child: NotificationListener<ScrollNotification>(
-                              onNotification: _onScrollNotification,
-                              child: ValueListenableBuilder(
-                                valueListenable: controller.moviesNotifier,
-                                builder: (context, value, _) {
-                                  return switch (value) {
-                                    MoviesLoadingState() => const Center(
-                                        child: CircularProgressIndicator(),
-                                      ),
-                                    MoviesSuccessState() => ListView.builder(
-                                        itemCount: value.movies.length +
-                                            (controller.hasMore ? 1 : 0),
-                                        itemBuilder: (context, index) {
-                                          if (index >= value.movies.length) {
-                                            return const Center(
-                                              child: Padding(
-                                                padding: EdgeInsets.all(8.0),
-                                                child:
-                                                    CircularProgressIndicator(),
-                                              ),
-                                            );
-                                          }
-                                          final movie = value.movies[index];
-                                          return ListTile(
-                                            title: Text(movie.title),
-                                            subtitle: Text(
-                                                'Ano: ${movie.year} | Vencedor: ${movie.winner ? "Sim" : "Não"}'),
-                                          );
-                                        },
-                                      ),
-                                    MoviesErrorState() => Center(
-                                        child: Text(
-                                            'Erro: ${value.error.message}'),
-                                      ),
-                                    _ => const SizedBox.shrink(),
-                                  };
-                                },
-                              ),
-                            ),
-                          ),
-                        ],
+                    MoviesSuccessState() =>
+                      NotificationListener<ScrollNotification>(
+                        onNotification: _onScrollNotification,
+                        child: ListView.builder(
+                          itemCount: value.movies.length,
+                          itemBuilder: (context, index) {
+                            final movie = value.movies[index];
+                            return ListTile(
+                              title: Text(movie.title),
+                              subtitle: Text(
+                                  'Ano: ${movie.year} | Vencedor: ${movie.winner ? "Sim" : "Não"}'),
+                            );
+                          },
+                        ),
                       ),
                     MoviesErrorState() => Center(
                         child: Text('Erro: ${value.error.message}'),
@@ -181,8 +140,11 @@ class _MoviesPageState extends State<MoviesPage> {
   bool _onScrollNotification(ScrollNotification notification) {
     if (notification is ScrollEndNotification &&
         notification.metrics.extentAfter < 500) {
-      if (!controller.isLoading && controller.hasMore) {
-        controller.nextPage(_yearController.text);
+      final currentState = controller.moviesNotifier.value;
+      if (currentState is MoviesSuccessState && !currentState.isLoadingMore) {
+        controller.getMoviesByYear(
+          _yearController.text,
+        );
       }
     }
     return false;

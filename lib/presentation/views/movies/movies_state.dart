@@ -10,8 +10,29 @@ class MoviesLoadingState extends MoviesState {}
 class MoviesSuccessState extends MoviesState {
   final List<MovieEntity> movies;
   final int totalPages;
+  final bool isLoadingMore;
+  final CustomError? loadMoreError;
 
-  MoviesSuccessState({required this.movies, required this.totalPages});
+  MoviesSuccessState({
+    required this.movies,
+    required this.totalPages,
+    this.isLoadingMore = false,
+    this.loadMoreError,
+  });
+
+  MoviesSuccessState copyWith({
+    List<MovieEntity>? movies,
+    int? totalPages,
+    bool? isLoadingMore,
+    CustomError? loadMoreError,
+  }) {
+    return MoviesSuccessState(
+      movies: movies ?? this.movies,
+      totalPages: totalPages ?? this.totalPages,
+      isLoadingMore: isLoadingMore ?? this.isLoadingMore,
+      loadMoreError: loadMoreError,
+    );
+  }
 }
 
 class MoviesErrorState extends MoviesState {

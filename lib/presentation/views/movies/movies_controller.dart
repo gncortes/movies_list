@@ -1,58 +1,46 @@
-import 'package:flutter/material.dart';
+import 'package:flutter/foundation.dart';
 
 import '../../../data/datasource/movies_datasource.dart';
 import 'movies_notifier.dart';
+import 'movies_state.dart';
 
 class MoviesController {
   final IMoviesDatasource _datasource;
 
-  MoviesController(this._datasource);
-
   final MoviesNotifier moviesNotifier = MoviesNotifier();
-  final ValueNotifier<int> _currentPageNotifier = ValueNotifier(1);
+
   final ValueNotifier<bool> winnerFilterNotifier = ValueNotifier(false);
 
-  bool isLoading = false;
-  bool hasMore = true;
+  MoviesController(this._datasource);
 
-  void resetPage() {
-    _currentPageNotifier.value = 1;
-    hasMore = true;
-    moviesNotifier.clearMovies();
-  }
+  Future<void> getMoviesByYear(
+    String year,
+  ) async {
+    if (moviesNotifier.value is MoviesSuccessState &&
+        (moviesNotifier.value as MoviesSuccessState).isLoadingMore) {
+      return;
+    }
 
-  void getMoviesByYear(String year) async {
-    if (!isLoading) {
-      isLoading = true;
-      final result = await _datasource.getMoviesByYearPagined(
+    if (moviesNotifier.value is! MoviesSuccessState) {
+      await moviesNotifier.fetch(
+        _datasource.getMoviesByYearPagined,
         year,
-        page: _currentPageNotifier.value,
-        size: 10,
+        winnerFilterNotifier.value,
       );
-
-      result.fold(
-        (error) {
-          isLoading = false;
-          moviesNotifier.setError(error);
-        },
-        (moviesData) {
-          isLoading = false;
-          _currentPageNotifier.value++;
-          hasMore = moviesData.hasMore;
-          moviesNotifier.addMovies(
-            moviesData.content,
-            moviesData.totalElements,
-          ); // Adiciona novos filmes à lista existente
-        },
+    } else {
+      await moviesNotifier.loadMore(
+        _datasource.getMoviesByYearPagined,
+        year,
+        winnerFilterNotifier.value,
       );
     }
   }
 
-  void nextPage(String year) {
-    getMoviesByYear(year);
+  void clearMovies() {
+    moviesNotifier.clearMovies();
   }
 
-  void setWinnerFilter(bool isWinner) {
-    winnerFilterNotifier.value = isWinner;
+  void setWinnerFilter(bool value) {
+    winnerFilterNotifier.value = value;
   }
 }
