@@ -169,10 +169,8 @@ class MoviesDatasource implements IMoviesDatasource {
         },
       );
 
-      await Future.delayed(const Duration(seconds: 3));
-
       if (response is Map<String, dynamic>) {
-        return Right(PaginedMoviesModel.fromJson(json));
+        return Right(PaginedMoviesModel.fromJson(response));
       }
 
       return const Left(CustomError(
@@ -190,114 +188,3 @@ class MoviesDatasource implements IMoviesDatasource {
     }
   }
 }
-
-final json = {
-  "content": [
-    {
-      "id": 197,
-      "year": 2018,
-      "title": "Holmes & Watson",
-      "studios": ["Columbia Pictures"],
-      "producers": [
-        "Adam McKay",
-        "Clayton Townsend",
-        "Jimmy Miller",
-        "Will Ferrell"
-      ],
-      "winner": true
-    },
-    {
-      "id": 198,
-      "year": 2019,
-      "title": "Once Upon a Time in Hollywood",
-      "studios": ["Columbia Pictures"],
-      "producers": ["David Heyman", "Shannon McIntosh", "Quentin Tarantino"],
-      "winner": true
-    },
-    {
-      "id": 199,
-      "year": 2020,
-      "title": "Parasite",
-      "studios": ["CJ Entertainment"],
-      "producers": ["Kwak Sin-ae", "Bong Joon-ho"],
-      "winner": true
-    },
-    {
-      "id": 200,
-      "year": 2018,
-      "title": "A Star is Born",
-      "studios": ["Warner Bros."],
-      "producers": ["Bradley Cooper", "Bill Gerber", "Lynette Howell Taylor"],
-      "winner": false
-    },
-    {
-      "id": 201,
-      "year": 2021,
-      "title": "Dune",
-      "studios": ["Legendary Pictures"],
-      "producers": ["Mary Parent", "Denis Villeneuve", "Cale Boyter"],
-      "winner": true
-    },
-    {
-      "id": 202,
-      "year": 2017,
-      "title": "The Shape of Water",
-      "studios": ["Fox Searchlight Pictures"],
-      "producers": ["Guillermo del Toro", "J. Miles Dale"],
-      "winner": true
-    },
-    {
-      "id": 203,
-      "year": 2016,
-      "title": "La La Land",
-      "studios": ["Lionsgate"],
-      "producers": ["Fred Berger", "Jordan Horowitz", "Marc Platt"],
-      "winner": false
-    },
-    {
-      "id": 204,
-      "year": 2019,
-      "title": "Joker",
-      "studios": ["Warner Bros."],
-      "producers": [
-        "Todd Phillips",
-        "Bradley Cooper",
-        "Emma Tillinger Koskoff"
-      ],
-      "winner": false
-    },
-    {
-      "id": 205,
-      "year": 2020,
-      "title": "1917",
-      "studios": ["Universal Pictures"],
-      "producers": ["Sam Mendes", "Pippa Harris", "Jayne-Ann Tenggren"],
-      "winner": false
-    },
-    {
-      "id": 206,
-      "year": 2021,
-      "title": "No Time to Die",
-      "studios": ["MGM"],
-      "producers": ["Michael G. Wilson", "Barbara Broccoli"],
-      "winner": false
-    }
-  ],
-  "pageable": {
-    "sort": {"unsorted": true, "sorted": false, "empty": true},
-    "offset": 0,
-    "pageSize": 10,
-    "pageNumber": 0,
-    "unpaged": false,
-    "paged": true
-  },
-  "last": false,
-  "totalPages": 1,
-  "totalElements": 10,
-  "size": 10,
-  "number": 0,
-  "sort": {"unsorted": true, "sorted": false, "empty": true},
-  "first": true,
-  "numberOfElements": 10,
-  "empty": false
-};

@@ -64,12 +64,7 @@ class MoviesNotifier extends ValueNotifier<MoviesState> {
         );
 
         result.fold(
-          (error) {
-            value = currentState.copyWith(
-              isLoadingMore: false,
-              loadMoreError: error,
-            );
-          },
+          (error) => value = MoviesErrorState(error: error),
           (moviesData) {
             final newMovies = moviesData.content;
 

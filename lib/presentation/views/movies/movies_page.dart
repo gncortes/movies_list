@@ -115,31 +115,37 @@ class _MoviesPageState extends State<MoviesPage> {
                         child: CircularProgressIndicator(),
                       ),
                     MoviesSuccessState() =>
-                      NotificationListener<ScrollNotification>(
-                        onNotification: _onScrollNotification,
-                        child: ListView.builder(
-                          itemCount: value.isLoadingMore
-                              ? value.movies.length + 1
-                              : value.movies.length,
-                          itemBuilder: (context, index) {
-                            if (index >= value.movies.length) {
-                              return const Center(
-                                child: Padding(
-                                  padding: EdgeInsets.all(8.0),
-                                  child: CircularProgressIndicator(),
-                                ),
-                              );
-                            }
+                      value.movies.isEmpty && !value.isLoadingMore
+                          ? const Center(
+                              child: Text(
+                                  'Nenhum filme encontrado para o filtro informado.'),
+                            )
+                          : NotificationListener<ScrollNotification>(
+                              onNotification: _onScrollNotification,
+                              child: ListView.builder(
+                                itemCount: value.isLoadingMore
+                                    ? value.movies.length + 1
+                                    : value.movies.length,
+                                itemBuilder: (context, index) {
+                                  if (index >= value.movies.length) {
+                                    return const Center(
+                                      child: Padding(
+                                        padding: EdgeInsets.all(8.0),
+                                        child: CircularProgressIndicator(),
+                                      ),
+                                    );
+                                  }
 
-                            final movie = value.movies[index];
-                            return ListTile(
-                              title: Text(movie.title),
-                              subtitle: Text(
-                                  'Ano: ${movie.year} | Vencedor: ${movie.winner ? "Sim" : "Não"}'),
-                            );
-                          },
-                        ),
-                      ),
+                                  final movie = value.movies[index];
+                                  return ListTile(
+                                    title: Text(movie.title),
+                                    subtitle: Text(
+                                      'Ano: ${movie.year} | Vencedor: ${movie.winner ? "Sim" : "Não"}',
+                                    ),
+                                  );
+                                },
+                              ),
+                            ),
                     MoviesErrorState() => Center(
                         child: Text('Erro: ${value.error.message}'),
                       ),
