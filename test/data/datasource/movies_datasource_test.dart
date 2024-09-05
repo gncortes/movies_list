@@ -1,3 +1,4 @@
+import 'package:flutter/foundation.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:mockito/mockito.dart';
 import 'package:movies_list/data/datasource/movies_datasource.dart';
@@ -5,9 +6,11 @@ import 'package:movies_list/data/models/models.dart';
 import 'package:movies_list/domain/failures/custom_error.dart';
 import 'package:movies_list/domain/failures/failures.dart';
 import 'package:movies_list/infrastructure/infrastructure.dart';
+import 'package:mockito/annotations.dart';
 
-class MockHttpService extends Mock implements IHttpService {}
+import 'movies_datasource_test.mocks.dart';
 
+@GenerateMocks([IHttpService])
 void main() {
   late IMoviesDatasource datasource;
   late IHttpService mockHttpService;
@@ -15,7 +18,7 @@ void main() {
   const path = 'movies';
 
   setUp(() {
-    mockHttpService = MockHttpService();
+    mockHttpService = MockIHttpService();
     datasource = MoviesDatasource(mockHttpService);
   });
 
@@ -28,14 +31,25 @@ void main() {
             'projection': 'years-with-multiple-winners',
           },
         ),
-      ).thenAnswer((_) async => {
-            'years': [
-              {'year': '1990'},
-              {'year': '2000'}
-            ]
-          });
+      ).thenAnswer(
+        (_) async => {
+          'years': [
+            {"year": 9999, "winnerCount": 99},
+            {"year": 9999, "winnerCount": 99}
+          ]
+        },
+      );
 
       final result = await datasource.getYearsWithMoreThanOneWinner();
+
+      verify(
+        mockHttpService.get(
+          path,
+          queryParameters: {
+            'projection': 'years-with-multiple-winners',
+          },
+        ),
+      ).called(1);
 
       expect(result.isRight(), true);
       expect(result.getOrElse(() => []), isA<List<YearModel>>());
