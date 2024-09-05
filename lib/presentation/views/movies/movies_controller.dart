@@ -12,32 +12,47 @@ class MoviesController {
   final ValueNotifier<int> _currentPageNotifier = ValueNotifier(1);
   final ValueNotifier<bool> winnerFilterNotifier = ValueNotifier(false);
 
-  int get currentPage => _currentPageNotifier.value;
+  bool isLoading = false;
+  bool hasMore = true;
 
-  void getMoviesByYear(String year) {
-    moviesNotifier.fetch(
-      _datasource.getMoviesByYearPagined,
-      year,
-      _currentPageNotifier.value,
-      winnerFilterNotifier.value,
-    );
+  void resetPage() {
+    _currentPageNotifier.value = 1;
+    hasMore = true;
+    moviesNotifier.clearMovies();
+  }
+
+  void getMoviesByYear(String year) async {
+    if (!isLoading) {
+      isLoading = true;
+      final result = await _datasource.getMoviesByYearPagined(
+        year,
+        page: _currentPageNotifier.value,
+        size: 10,
+      );
+
+      result.fold(
+        (error) {
+          isLoading = false;
+          moviesNotifier.setError(error);
+        },
+        (moviesData) {
+          isLoading = false;
+          _currentPageNotifier.value++;
+          hasMore = moviesData.hasMore;
+          moviesNotifier.addMovies(
+            moviesData.content,
+            moviesData.totalElements,
+          ); // Adiciona novos filmes à lista existente
+        },
+      );
+    }
   }
 
   void nextPage(String year) {
-    _currentPageNotifier.value++;
     getMoviesByYear(year);
-  }
-
-  void previousPage(String year) {
-    if (_currentPageNotifier.value > 1) {
-      _currentPageNotifier.value--;
-      getMoviesByYear(year);
-    }
   }
 
   void setWinnerFilter(bool isWinner) {
     winnerFilterNotifier.value = isWinner;
   }
-
-  ValueNotifier<int> get currentPageNotifier => _currentPageNotifier;
 }

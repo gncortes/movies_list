@@ -120,34 +120,47 @@ class _MoviesPageState extends State<MoviesPage> {
                               },
                             ),
                           ),
-                          ValueListenableBuilder<int>(
-                            valueListenable: controller.currentPageNotifier,
-                            builder: (context, currentPage, _) {
-                              return Row(
-                                mainAxisAlignment:
-                                    MainAxisAlignment.spaceBetween,
-                                children: [
-                                  if (currentPage > 1)
-                                    ElevatedButton(
-                                      onPressed: () {
-                                        controller.previousPage(
-                                          _yearController.text,
-                                        );
-                                      },
-                                      child: const Text('Página Anterior'),
-                                    ),
-                                  if (currentPage < value.totalPages)
-                                    ElevatedButton(
-                                      onPressed: () {
-                                        controller.nextPage(
-                                          _yearController.text,
-                                        );
-                                      },
-                                      child: const Text('Próxima Página'),
-                                    ),
-                                ],
-                              );
-                            },
+                          Expanded(
+                            // Usa NotificationListener para detectar a rolagem e carregar mais dados
+                            child: NotificationListener<ScrollNotification>(
+                              onNotification: _onScrollNotification,
+                              child: ValueListenableBuilder(
+                                valueListenable: controller.moviesNotifier,
+                                builder: (context, value, _) {
+                                  return switch (value) {
+                                    MoviesLoadingState() => const Center(
+                                        child: CircularProgressIndicator(),
+                                      ),
+                                    MoviesSuccessState() => ListView.builder(
+                                        itemCount: value.movies.length +
+                                            (controller.hasMore ? 1 : 0),
+                                        itemBuilder: (context, index) {
+                                          if (index >= value.movies.length) {
+                                            return const Center(
+                                              child: Padding(
+                                                padding: EdgeInsets.all(8.0),
+                                                child:
+                                                    CircularProgressIndicator(),
+                                              ),
+                                            );
+                                          }
+                                          final movie = value.movies[index];
+                                          return ListTile(
+                                            title: Text(movie.title),
+                                            subtitle: Text(
+                                                'Ano: ${movie.year} | Vencedor: ${movie.winner ? "Sim" : "Não"}'),
+                                          );
+                                        },
+                                      ),
+                                    MoviesErrorState() => Center(
+                                        child: Text(
+                                            'Erro: ${value.error.message}'),
+                                      ),
+                                    _ => const SizedBox.shrink(),
+                                  };
+                                },
+                              ),
+                            ),
                           ),
                         ],
                       ),
@@ -163,5 +176,15 @@ class _MoviesPageState extends State<MoviesPage> {
         ),
       ),
     );
+  }
+
+  bool _onScrollNotification(ScrollNotification notification) {
+    if (notification is ScrollEndNotification &&
+        notification.metrics.extentAfter < 500) {
+      if (!controller.isLoading && controller.hasMore) {
+        controller.nextPage(_yearController.text);
+      }
+    }
+    return false;
   }
 }
