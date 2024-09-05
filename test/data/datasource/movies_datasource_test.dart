@@ -23,14 +23,10 @@ void main() {
   });
 
   group('getYearsWithMoreThanOneWinner', () {
+    final queryParameters = {'projection': 'years-with-multiple-winners'};
     test('should return a list of YearModel on success', () async {
       when(
-        mockHttpService.get(
-          path,
-          queryParameters: {
-            'projection': 'years-with-multiple-winners',
-          },
-        ),
+        mockHttpService.get(path, queryParameters: queryParameters),
       ).thenAnswer(
         (_) async => {
           'years': [
@@ -43,12 +39,7 @@ void main() {
       final result = await datasource.getYearsWithMoreThanOneWinner();
 
       verify(
-        mockHttpService.get(
-          path,
-          queryParameters: {
-            'projection': 'years-with-multiple-winners',
-          },
-        ),
+        mockHttpService.get(path, queryParameters: queryParameters),
       ).called(1);
 
       expect(result.isRight(), true);
@@ -56,12 +47,8 @@ void main() {
     });
 
     test('should return CustomError when the list is not found', () async {
-      when(mockHttpService.get(
-        path,
-        queryParameters: {
-          'projection': 'years-with-multiple-winners',
-        },
-      )).thenAnswer((_) async => {});
+      when(mockHttpService.get(path, queryParameters: queryParameters))
+          .thenAnswer((_) async => {});
 
       final result = await datasource.getYearsWithMoreThanOneWinner();
 
@@ -70,12 +57,8 @@ void main() {
     });
 
     test('should return CustomError in case of an exception', () async {
-      when(mockHttpService.get(
-        path,
-        queryParameters: {
-          'projection': 'years-with-multiple-winners',
-        },
-      )).thenThrow(DefaultException());
+      when(mockHttpService.get(path, queryParameters: queryParameters))
+          .thenThrow(DefaultException());
 
       final result = await datasource.getYearsWithMoreThanOneWinner();
 
@@ -87,47 +70,61 @@ void main() {
     });
   });
 
-  // group('getStudiosWithTheMostWins', () {
-  //   test('should return a list of StudioModel on success', () async {
-  //     when(mockHttpService.get(path,
-  //             queryParameters: anyNamed('queryParameters')))
-  //         .thenAnswer(
-  //       (_) async => {
-  //         'studios': [
-  //           {'name': 'Studio A', 'wins': 10},
-  //           {'name': 'Studio B', 'wins': 5}
-  //         ]
-  //       },
-  //     );
+  group('getStudiosWithTheMostWins', () {
+    final queryParameters = {'projection': 'studios-with-win-count'};
+    test('should return a list of StudioModel on success', () async {
+      when(mockHttpService.get(
+        path,
+        queryParameters: queryParameters,
+      )).thenAnswer(
+        (_) async => {
+          "studios": [
+            {"name": "Studio Name", "winCount": 9},
+            {"name": "Studio Name", "winCount": 9}
+          ]
+        },
+      );
 
-  //     final result = await datasource.getStudiosWithTheMostWins();
+      final result = await datasource.getStudiosWithTheMostWins();
 
-  //     expect(result.isRight(), true);
-  //     expect(result.getOrElse(() => []), isA<List<StudioModel>>());
-  //   });
+      verify(
+        mockHttpService.get(
+          path,
+          queryParameters: queryParameters,
+        ),
+      ).called(1);
 
-  //   test('should return CustomError when the list is not found', () async {
-  //     when(mockHttpService.get(path,
-  //             queryParameters: anyNamed('queryParameters')))
-  //         .thenAnswer((_) async => {});
+      expect(result.isRight(), true);
+      expect(result.getOrElse(() => []), isA<List<StudioModel>>());
+    });
 
-  //     final result = await datasource.getStudiosWithTheMostWins();
+    test('should return CustomError when the list is not found', () async {
+      when(mockHttpService.get(
+        path,
+        queryParameters: queryParameters,
+      )).thenAnswer((_) async => {});
 
-  //     expect(result.isLeft(), true);
-  //     expect(result.fold((l) => l, (r) => null), isA<CustomError>());
-  //   });
+      final result = await datasource.getStudiosWithTheMostWins();
 
-  //   test('should return CustomError in case of an exception', () async {
-  //     when(mockHttpService.get(path,
-  //             queryParameters: anyNamed('queryParameters')))
-  //         .thenThrow(CustomException(error: CustomError(message: 'Error')));
+      expect(result.isLeft(), true);
+      expect(result.fold((l) => l, (r) => null), isA<CustomError>());
+    });
 
-  //     final result = await datasource.getStudiosWithTheMostWins();
+    test('should return CustomError in case of an exception', () async {
+      when(mockHttpService.get(
+        path,
+        queryParameters: queryParameters,
+      )).thenThrow(DefaultException());
 
-  //     expect(result.isLeft(), true);
-  //     expect(result.fold((l) => l.message, (r) => null), 'Error');
-  //   });
-  // });
+      final result = await datasource.getStudiosWithTheMostWins();
+
+      expect(result.isLeft(), true);
+      expect(
+        result.fold((l) => l.message, (r) => null),
+        'Aconteceu um erro inesperado',
+      );
+    });
+  });
 
   // group('getMoviesByYear', () {
   //   test('should return a list of MovieModel on success', () async {
