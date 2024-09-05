@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 
-import '../../widgets/error.dart';
+import '../../widgets/widgets.dart';
 import 'dashboard_controller.dart';
 import 'dashboard_states.dart';
 import 'widgets/widgets.dart';
@@ -18,9 +18,13 @@ class _DashboardPageState extends State<DashboardPage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(),
-      body: Column(
-        crossAxisAlignment: CrossAxisAlignment.stretch,
+      appBar: AppBar(
+        title: const Text('Dashboard'),
+        actions: [
+          IconButton(onPressed: _reload, icon: const Icon(Icons.refresh))
+        ],
+      ),
+      body: ListView(
         children: [
           Row(
             crossAxisAlignment: CrossAxisAlignment.start,
@@ -30,16 +34,14 @@ class _DashboardPageState extends State<DashboardPage> {
                   valueListenable: controller.yearsNotifier,
                   builder: (context, value, child) {
                     return switch (value) {
-                      DashboardYearsLoadingState() =>
-                        const Center(child: CircularProgressIndicator()),
+                      DashboardYearsLoadingState() => const CenteredLoading(),
                       DashboardYearsSuccessState() =>
                         YearCard(years: value.years),
                       DashboardYearsErrorState() => CustomErrorWidget(
                           error: (value).error,
                           onRetry: controller.getYearsWithMoreThanOneWinner,
                         ),
-                      _ => const SizedBox
-                          .shrink(), // Fallback para estados desconhecidos
+                      _ => const SizedBox.shrink(),
                     };
                   },
                 ),
@@ -49,16 +51,14 @@ class _DashboardPageState extends State<DashboardPage> {
                   valueListenable: controller.studiosNotifier,
                   builder: (context, value, child) {
                     return switch (value) {
-                      DashboardStudiosLoadingState() =>
-                        const Center(child: CircularProgressIndicator()),
+                      DashboardStudiosLoadingState() => const CenteredLoading(),
                       DashboardStudiosSuccessState() =>
                         StudiosCard(studios: value.studios),
                       DashboardStudiosErrorState() => CustomErrorWidget(
                           error: (value).error,
                           onRetry: controller.getStudiosWithTheMostWins,
                         ),
-                      _ => const SizedBox
-                          .shrink(), // Fallback para estados desconhecidos
+                      _ => const SizedBox.shrink(),
                     };
                   },
                 ),
@@ -72,8 +72,12 @@ class _DashboardPageState extends State<DashboardPage> {
 
   @override
   void initState() {
+    _reload();
+    super.initState();
+  }
+
+  void _reload() {
     controller.getStudiosWithTheMostWins();
     controller.getYearsWithMoreThanOneWinner();
-    super.initState();
   }
 }

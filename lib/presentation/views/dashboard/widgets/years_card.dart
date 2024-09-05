@@ -17,7 +17,7 @@ class YearCard extends StatelessWidget {
       child: Padding(
         padding: const EdgeInsets.all(16.0),
         child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
+          crossAxisAlignment: CrossAxisAlignment.stretch,
           children: [
             const Text(
               'Anos com mais de um vencedor',
@@ -28,12 +28,12 @@ class YearCard extends StatelessWidget {
               ),
             ),
             const SizedBox(height: 16),
-            Column(
-              children: years.map((year) {
+            ...years.map(
+              (year) {
                 return Padding(
                   padding: const EdgeInsets.symmetric(vertical: 8.0),
-                  child: Row(
-                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.stretch,
                     children: [
                       Text(
                         'Ano: ${year.year}',
@@ -52,8 +52,8 @@ class YearCard extends StatelessWidget {
                     ],
                   ),
                 );
-              }).toList(),
-            ),
+              },
+            )
           ],
         ),
       ),
