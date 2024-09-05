@@ -1,4 +1,3 @@
-import 'package:flutter/foundation.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:mockito/mockito.dart';
 import 'package:movies_list/data/datasource/movies_datasource.dart';
@@ -236,49 +235,92 @@ void main() {
     });
   });
 
-  // group('getMoviesByYearPagined', () {
-  //   test('should return PaginedMoviesModel on success', () async {
-  //     when(mockHttpService.get(path,
-  //             queryParameters: anyNamed('queryParameters')))
-  //         .thenAnswer((_) async => {
-  //               'movies': [
-  //                 {'title': 'Movie 1', 'year': '1990', 'winner': true}
-  //               ],
-  //               'total': 1,
-  //               'page': 1,
-  //               'size': 1
-  //             });
+  group('getMoviesByYearPagined', () {
+    final queryParameters = {
+      'year': '1990',
+      'page': 1,
+      'size': 1,
+      'winner': true,
+    };
+    test('should return PaginedMoviesModel on success', () async {
+      when(mockHttpService.get(path, queryParameters: queryParameters))
+          .thenAnswer(
+        (_) async => {
+          "content": [
+            {
+              "id": 999,
+              "year": 1900,
+              "title": "Movie Title",
+              "studios": ["Studio Name"],
+              "producers": ["Producer Name"],
+              "winner": true
+            },
+            {
+              "id": 999,
+              "year": 1900,
+              "title": "Movie Title",
+              "studios": ["Studio Name", "Studio Name"],
+              "producers": ["Producer Name"],
+              "winner": false
+            }
+          ],
+          "pageable": {
+            "sort": {"sorted": false, "unsorted": true},
+            "pageSize": 00,
+            "pageNumber": 0,
+            "offset": 0,
+            "paged": true,
+            "unpaged": false
+          },
+          "totalElements": 999,
+          "last": false,
+          "totalPages": 99,
+          "first": true,
+          "sort": {"sorted": false, "unsorted": true},
+          "number": 0,
+          "numberOfElements": 99,
+          "size": 99
+        },
+      );
 
-  //     final result = await datasource.getMoviesByYearPagined('1990',
-  //         page: 1, size: 1, winner: true);
+      final result = await datasource.getMoviesByYearPagined(
+        '1990',
+        page: 1,
+        size: 1,
+        winner: true,
+      );
 
-  //     expect(result.isRight(), true);
-  //     expect(result.getOrElse(() => null), isA<PaginedMoviesModel>());
-  //   });
+      expect(result.isRight(), true);
+    });
 
-  //   test('should return CustomError when movie list is not found', () async {
-  //     when(mockHttpService.get(path,
-  //             queryParameters: anyNamed('queryParameters')))
-  //         .thenAnswer((_) async => {});
+    test('should return CustomError when movie list is not found', () async {
+      when(mockHttpService.get(path, queryParameters: queryParameters))
+          .thenAnswer((_) async => {});
 
-  //     final result = await datasource.getMoviesByYearPagined('1990',
-  //         page: 1, size: 1, winner: true);
+      final result = await datasource.getMoviesByYearPagined('1990',
+          page: 1, size: 1, winner: true);
 
-  //     expect(result.isLeft(), true);
-  //     expect(
-  //         result.fold((l) => l.message, (r) => null), 'Movie list not found');
-  //   });
+      expect(result.isLeft(), true);
+      expect(
+        result.fold((l) => l.message, (r) => null),
+        'Lista de filmes não encontrada',
+      );
+    });
 
-  //   test('should return CustomError in case of an exception', () async {
-  //     when(mockHttpService.get(path,
-  //             queryParameters: anyNamed('queryParameters')))
-  //         .thenThrow(CustomException(error: CustomError(message: 'Error')));
+    test('should return CustomError in case of an exception', () async {
+      when(mockHttpService.get(path, queryParameters: queryParameters))
+          .thenThrow(
+        DefaultException(),
+      );
 
-  //     final result = await datasource.getMoviesByYearPagined('1990',
-  //         page: 1, size: 1, winner: true);
+      final result = await datasource.getMoviesByYearPagined('1990',
+          page: 1, size: 1, winner: true);
 
-  //     expect(result.isLeft(), true);
-  //     expect(result.fold((l) => l.message, (r) => null), 'Error');
-  //   });
-  // });
+      expect(result.isLeft(), true);
+      expect(
+        result.fold((l) => l.message, (r) => null),
+        'Aconteceu um erro inesperado',
+      );
+    });
+  });
 }
