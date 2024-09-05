@@ -33,6 +33,12 @@ void main() {
 
     test('should fetch movies successfully and update notifier state',
         () async {
+      when(mockPaginedMoviesEntity.content).thenReturn([]);
+
+      when(mockPaginedMoviesEntity.totalPages).thenReturn(1);
+
+      when(mockPaginedMoviesEntity.hasMore).thenReturn(false);
+
       when(mockDatasource.getMoviesByYearPagined(
         testYear,
         page: page,
@@ -51,7 +57,7 @@ void main() {
         page: page,
         size: size,
         winner: winner,
-      )).thenThrow(DefaultException());
+      )).thenAnswer((_) async => Left(DefaultException().error));
 
       await controller.getMoviesByYear(testYear);
 
