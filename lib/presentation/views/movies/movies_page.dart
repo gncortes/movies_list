@@ -1,9 +1,11 @@
 import 'package:flutter/material.dart';
 
 import '../../widgets/drawer/custom_drawer.dart';
+import 'movies_controller.dart';
 
 class MoviesPage extends StatefulWidget {
-  const MoviesPage({super.key});
+  final MoviesController controller;
+  const MoviesPage({super.key, required this.controller});
 
   @override
   State<MoviesPage> createState() => _MoviesPageState();

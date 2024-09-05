@@ -41,9 +41,10 @@ class MoviesSearchWidget extends StatelessWidget {
                 height: 60,
                 child: ElevatedButton(
                   onPressed: () {
+                    FocusScope.of(context).unfocus();
                     final year = textEditingController.text;
                     if (year.isNotEmpty) {
-                      onSearch(year); // Executa a pesquisa com o ano fornecido
+                      onSearch(year);
                     } else {
                       ScaffoldMessenger.of(context).showSnackBar(
                         const SnackBar(
@@ -89,7 +90,7 @@ class MoviesSearchWidget extends StatelessWidget {
                 ),
               DashboardMovieSearchErrorState() => Padding(
                   padding: const EdgeInsets.all(16.0),
-                  child: Text('Erro: ${state.error.message}'),
+                  child: Text(state.error.message),
                 ),
               _ => const SizedBox.shrink(),
             };

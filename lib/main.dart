@@ -9,11 +9,14 @@ void main() {
 }
 
 class MyApp extends StatelessWidget {
-  MyApp({super.key});
+  final DashboardController dashboardController;
+  final MoviesController moviesController;
 
-  final dashboardController = DashboardController(
-    MoviesDatasource(HttpServiceImplementation()),
-  );
+  MyApp({super.key})
+      : dashboardController =
+            DashboardController(MoviesDatasource(HttpServiceImplementation())),
+        moviesController =
+            MoviesController(MoviesDatasource(HttpServiceImplementation()));
 
   @override
   Widget build(BuildContext context) {
@@ -27,7 +30,7 @@ class MyApp extends StatelessWidget {
       routes: {
         '/dashboard': (context) =>
             DashboardPage(controller: dashboardController),
-        '/movies': (context) => const MoviesPage(),
+        '/movies': (context) => MoviesPage(controller: moviesController),
       },
       debugShowCheckedModeBanner: false,
     );
