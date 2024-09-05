@@ -14,9 +14,8 @@ class MyApp extends StatelessWidget {
 
   MyApp({super.key})
       : dashboardController =
-            DashboardController(MoviesDatasource(HttpServiceImplementation())),
-        moviesController =
-            MoviesController(MoviesDatasource(HttpServiceImplementation()));
+            DashboardController(MoviesDatasource(HttpService())),
+        moviesController = MoviesController(MoviesDatasource(HttpService()));
 
   @override
   Widget build(BuildContext context) {

@@ -24,7 +24,7 @@ abstract class IMoviesDatasource {
 }
 
 class MoviesDatasource implements IMoviesDatasource {
-  final HttpServiceInterface _httpService;
+  final IHttpService _httpService;
 
   MoviesDatasource(this._httpService);
 
@@ -42,9 +42,11 @@ class MoviesDatasource implements IMoviesDatasource {
       );
 
       if (response['years'] is List) {
-        return Right((response['years'] as List)
-            .map((e) => YearModel.fromJson(e))
-            .toList());
+        if (response['years'].isNotEmpty) {
+          return Right((response['years'] as List)
+              .map((e) => YearModel.fromJson(e))
+              .toList());
+        }
       }
 
       return const Left(CustomError(

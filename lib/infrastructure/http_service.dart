@@ -5,7 +5,7 @@ import 'package:flutter/foundation.dart';
 
 import '../domain/failures/custom_http_exceptions.dart';
 
-abstract class HttpServiceInterface {
+abstract class IHttpService {
   Future<dynamic> get(
     String path, {
     Map<String, dynamic>? queryParameters,
@@ -13,7 +13,7 @@ abstract class HttpServiceInterface {
   });
 }
 
-class HttpServiceImplementation implements HttpServiceInterface {
+class HttpService implements IHttpService {
   final Dio dio = Dio(
     BaseOptions(
       connectTimeout: const Duration(seconds: 60),
