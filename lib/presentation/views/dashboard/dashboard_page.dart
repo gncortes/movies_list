@@ -15,6 +15,7 @@ class DashboardPage extends StatefulWidget {
 
 class _DashboardPageState extends State<DashboardPage> {
   DashboardController get controller => widget.controller;
+  TextEditingController moviesSearchController = TextEditingController();
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -41,6 +42,10 @@ class _DashboardPageState extends State<DashboardPage> {
                 ElevatedButton(
                   onPressed: controller.showMoviesAwardRange,
                   child: const Text('Mostrar Intervalo de Prêmios'),
+                ),
+                ElevatedButton(
+                  onPressed: controller.showMoviesByYearSearch, // Novo botão
+                  child: const Text('Pesquisar por Ano'),
                 ),
               ],
             ),
@@ -98,6 +103,13 @@ class _DashboardPageState extends State<DashboardPage> {
                         _ => const SizedBox.shrink(),
                       };
                     },
+                  ),
+                ShowMoviesByYearSearchState() => MoviesSearchWidget(
+                    onSearch: (year) {
+                      controller.searchMoviesByYear(year);
+                    },
+                    searchNotifier: controller.movieSearchNotifier,
+                    textEditingController: moviesSearchController,
                   ),
                 _ => const Center(child: Text('Selecione uma opção')),
               };
