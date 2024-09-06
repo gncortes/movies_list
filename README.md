@@ -48,7 +48,7 @@ Aqui está um exemplo de como `switch case` é usado em conjunto com o `ValueNot
 
 1. **Clareza**: Cada estado tem um caso específico, facilitando a leitura e o entendimento de como a UI reage a diferentes eventos.
 2. **Manutenção**: Novos estados podem ser facilmente adicionados sem a necessidade de modificar a estrutura principal da tela.
-3. **Reutilização**: Widgets como `YearCard`, `CustomErrorWidget` e `MoviesSearchWidget` são reutilizáveis e facilmente vinculados a diferentes estados.
+3. **Reutilização**: Widgets como `Text`, que é usado para exibir o título da `AppBar`, podem ser facilmente reutilizados em outros estados, dentro do mesmo `ValueListenableBuilder`. O mesmo vale para outros componentes, como `YearCard`, `CustomErrorWidget` e `MoviesSearchWidget`, que podem ser vinculados a diferentes estados e exibidos conforme a lógica definida no `switch case`.
 
 ### Exemplo de Valor Notificável
 
